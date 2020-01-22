@@ -3,7 +3,9 @@
         <app-shopping-edit></app-shopping-edit>
         <hr>
         <ul class="list-group">
-            <a class="list-group-item" style="cursor: pointer;" *ngFor="let ingredient of ingredients">
+            <a class="list-group-item list-group-item-action d-flex justify-content-between" style="cursor: pointer;" 
+                *ngFor="let ingredient of ingredients; let id = index"
+                (click)="onEditItem(id)">
                 {{ ingredient.name }} ({{ ingredient.amount }})
             </a>
         </ul>
