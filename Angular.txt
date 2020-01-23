@@ -1273,9 +1273,126 @@
 		{provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptorService, multi: true},
 	]
 
-26) Authentication
+26) Modules + Optimisations
+
+	Modules are a way of bundling Angular building blocks together i.e.: components, directives, services, pipes etc ...
+	This makes Angular aware of these features it doesn't auto detect them.	App requires at least one module.
+	Core Angular features are included in Angular modules e.g.: FormsModule.
+
+	In NgModule the declarations specifies the components and directives our module uses.
+	The imports section is important for declaring what your module requires.
+	The providers section determines what services your module provides.
+	The bootstrap array is important for starting the app i.e.: the component in the index file. Typically one root component.
+
+	Splitting the app into multiple modules makes the app leaner and more focussed. It can also enhance performance.
+	Our app routing module imports the RouterModule, to configure the routes. This same module is then exported in the app routing module.
+	We need to do this because every module works on its own in Angular, they don't communicate with each other. If we declare a component
+	in a certain module e.g.: app module, then we can only use it in there. Hence in the routing module we have to export the RoutingModule
+	so that when we import the AppRoutingModule in our AppModule we also import everything that module exports.
+
+	Generally as well as having an app module we split the application into feature modules e.g.: OrderModule and ProductsModule.
+	This is the prerequisite for performance enhancements.	
+
+	Note services are a special exception and are available globally across modules, everything else has local scope.
+	The BrowserModule, which provides ngIf and ngFor is also a special exception. It can only be imported once at the app level. If we need these
+	features in other modules we have to include the CommonModule in other modules.
+
+	We can also move the routes, related to our module into the module itself i.e.: the routing section for the recipes.
+	Max also creates a new module for the recipes routing too. When splitting the router module paths, only the app routing module has .forRoot,
+	the other routing modules use .forChild. 
+
+	After the refactoring the app recipes module, we then could then remove all of the exports from the recipes module as the whole unit was self
+	contained, with the recipe routing module containing all the recipe component references. 
+
+	With the shopping list routing, as there was only one route, we didn't create a separate routing module but just included the path directly
+	in the shopping list module itself.
+
+	Shared Modules
+	--------------
+
+	We can put shared component, directives and modules, used across multiple feature modules into a shared module, which is then imported into
+	all feature modules. Of course we can have more than one shared module, so they don't have to be called shared module.
+	NOTE: You can only declare a component, directive or pipe once!
+
+	Another pattern is to create a core module with all of our services and then include this module in the app. An alternative is to use providedIn
+	within our services directly. It's not a pattern that we have to use and Max reccommends uses providedIn anyway.
+
+	Lazy Loading
+	------------
+
+	Using multiple feature modules is a prerequisite for lazy loading, which is actually where the performance improvements start.
+	Also each module, used in lazy loading must bring its own routes with it, for lazy loading to work.
+
+	In the recipes routing module, he changes:
+
+		const routes: Routes = [
+		    { path: 'recipes',
+
+	to ...
+
+		const routes: Routes = [
+		    { path: '',
+
+	Then in the app routing module another path is added:
+
+		 { path: 'recipes', loadChildren: './recipes/recipes.module#RecipesModule' }
+
+	This tells angular that when the recipes route is activated, to load the module pointed to by the load children reference. 
+	In addition we also need to tell Angular what the name of the exported class in that file is by the hashtag.
+
+	*** We also have to remove the RecipesModule from the app module imports, otherwise the browser will just hang as we are trying
+	*** to both eagerly and lazily load the module!
+
+	If you're using Angular 8+, you can use an alternative syntax for specifying lazy-loaded routes:
+
+	Instead of
+
+		const routes: Routes = [{
+		  path: 'your-path',
+		  loadChildren: './your-module-path/module-name.module#ModuleName'
+		}];
+		you can use
+
+		const routes: Routes = [{
+		  path: 'your-path',
+		  loadChildren: () => import('./your-module-path/module-name.module').then(m => m.ModuleName)
+		}];
+	   
+	Please note, that you need to ensure that in your tsconfig.json file, you use
+
+		"module": "esnext",
+		instead of
+
+		"module": "es2015",
+
+	Why would you use this syntax? In the future, it'll replace the "string-only" approach (i.e. the first alternative mentioned here). 
+	It also will give you better IDE support.
+
+	Preloading Lazy Loaded Modules
+	------------------------------
+
+	In the app module (nb: we can also specify our own preloading strategy)
+
+	@NgModule({
+	    imports: [RouterModule.forRoot(appRoutes, {preloadingStrategy: PreloadAllModules})],
+	    exports: [RouterModule]
+	})
+
+	Ahead of Time (AoT) vs Just in Time (JiT)
+	-----------------------------------------
+
+	Typescript -> Javascript + Also Angular compiler, written in JS and part of the angular app in the browser, takes compiled js + templates to update the dom.
+	This all happens in the browser. This is JiT compilation and the angular compiler is large as well.
+
+	Instead we can do this AoT during the build process. For production builds we use:
+
+	> ng build --prod
+
+	
+
+	
 
 
 
 
-
+	

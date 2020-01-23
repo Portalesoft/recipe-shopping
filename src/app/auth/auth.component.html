@@ -1,9 +1,10 @@
 <div class="container">
     <div class="row mt-4">
         <div class="col-12 col-md-6">
-            <div class="alert alert-danger" role="alert" *ngIf="error">
+            <!-- <div class="alert alert-danger" role="alert" *ngIf="error">
                 {{ error }}
-            </div>
+            </div> -->
+            <app-alert [message]="error" *ngIf="error" (closeAlert)="onHandleCloseAlert()"></app-alert>
             <div *ngIf="isLoading" style="text-align: center;">
                 <app-loading-spinner></app-loading-spinner>
             </div>
