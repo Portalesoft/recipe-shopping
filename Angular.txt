@@ -1382,17 +1382,35 @@
 	-----------------------------------------
 
 	Typescript -> Javascript + Also Angular compiler, written in JS and part of the angular app in the browser, takes compiled js + templates to update the dom.
-	This all happens in the browser. This is JiT compilation and the angular compiler is large as well.
+	This all happens in the browser (ng serve). This is JiT compilation and the angular compiler is large as well.
 
 	Instead we can do this AoT during the build process. For production builds we use:
 
 	> ng build --prod
 
-	
+
+27) 	NgRx
+	----
+
+	Also maintained by the Angular team, mainly used for maintaining application state e.g.: api data loaded and saved via a service.
+	Application state is lost whenever the application refreshes. Persistent state is provided by the backend server.
+
+	For smaller apps services and simple ui states made by components, services and RxJs our current project is fine but in larger projects NgRx allows us
+	to create a more streamlined state implementation.
+
+	RxJS Issues:
+
+	1) State can be updated anywhere
+	2) State is possibly mutable
+	3) Handling side effects e.g.: Http calls is unclear
+
+	It's Redux!	
+
+
+28)	Angular 8
+	---------
 
 	
-
-
 
 
 	

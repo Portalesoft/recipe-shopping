@@ -1,8 +1,10 @@
-<div class="row my-2">
-    <div class="col-md-5">
-        <app-recipe-list></app-recipe-list>
-    </div>
-    <div class="col-md-7">
-        <router-outlet></router-outlet>
+<div class="container-fluid">
+    <div class="row mx-2 my-4">
+        <div class="col-md-5">
+            <app-recipe-list></app-recipe-list>
+        </div>
+        <div class="col-md-7" [@fadeElementsAnimation]="o.isActivated ? o.activatedRoute : ''">
+            <router-outlet #o="outlet"></router-outlet>
+        </div>
     </div>
 </div>
